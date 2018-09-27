@@ -22,10 +22,6 @@ public final class Population {
         return new Population(subjects);
     }
 
-    public List<Subject> getSubjects() {
-        return subjects;
-    }
-
     public Subject getRandom() {
         return getSubject(new Random().nextInt(getSize()));
     }

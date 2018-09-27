@@ -1,6 +1,8 @@
 package br.com.artificialinteligence.maze.model;
 
 import br.com.artificialinteligence.SplitEveryN;
+import br.com.artificialinteligence.maze.factories.DirectionsFactory;
+import br.com.artificialinteligence.maze.factories.GenesFactory;
 import br.com.artificialinteligence.model.Crossover;
 import br.com.artificialinteligence.model.Mutation;
 import br.com.artificialinteligence.model.Subject;
@@ -13,10 +15,6 @@ import java.util.stream.IntStream;
 
 public final class MazePath implements Subject {
 
-    private static final int TO_SPLIT_GENES = 2;
-
-    private final Maze maze;
-
     private final String genes;
 
     private final List<Direction> path;
@@ -25,57 +23,35 @@ public final class MazePath implements Subject {
 
     private Coordinates currentCoordinate = Coordinates.of(-1, 0);
 
-    private FitnessMazePath fitnessMazePath;
-
-    private MazePath(final Maze maze,
-                     final List<Direction> path) {
-        this.maze = maze;
+    private MazePath(final List<Direction> path) {
         this.path = path;
-        genes = path
-                .stream()
-                .map(Direction::getValue)
-                .collect(Collectors.joining());
-        fitnessMazePath = FitnessMazePath.create(maze, this);
-        fitness = fitnessMazePath.get();
+        genes = GenesFactory.createFrom(path);
+        fitness = FitnessMazePath.get().get(genes);
     }
 
-    public static MazePath of(final Maze maze,
-                              final List<Direction> path) {
-        return new MazePath(maze, path);
+    public static MazePath of(final List<Direction> path) {
+        return new MazePath(path);
     }
 
-    public static MazePath of(final Maze maze,
-                              final String genes) {
+    public static MazePath of(final String genes) {
         return new MazePath(
-                maze,
-                SplitEveryN.of(TO_SPLIT_GENES)
-                        .split(genes)
-                        .stream()
-                        .map(Direction::getByValue)
-                        .collect(Collectors.toList())
+                DirectionsFactory.createFrom(genes)
         );
     }
 
-    public static MazePath from(final Maze maze,
-                                final String genes,
+    public static MazePath from(final String genes,
                                 final Double mutationRate) {
         if (new Random().nextDouble() <= mutationRate) {
-            return MazePath.of(maze, genes).mutate();
+            return MazePath.of(genes).mutate();
         }
-        return MazePath.of(maze, genes);
+        return MazePath.of(genes);
     }
 
-    public static MazePath fixed(final Maze maze,
-                                final String genes) {
-        return MazePath.of(maze, genes);
-    }
-
-    public static Subject createRandom(final Integer genesLength,
-                                       final Maze maze) {
+    public static Subject createRandom(final Integer genesLength) {
         final List<Direction> genes = IntStream.range(0, genesLength)
                 .mapToObj(index -> Direction.getRandom())
                 .collect(Collectors.toList());
-        return MazePath.of(maze, genes);
+        return MazePath.of(genes);
     }
 
     public Boolean hasMove() {
@@ -86,14 +62,6 @@ public final class MazePath implements Subject {
         final Direction direction = path.remove(0);
         currentCoordinate = direction.getNextCoordinatesFromCurrent(currentCoordinate);
         return currentCoordinate;
-    }
-
-    public Coordinates getCurrentCoordinate() {
-        return currentCoordinate;
-    }
-
-    public List<Direction> getPath() {
-        return path;
     }
 
     @Override
@@ -109,14 +77,13 @@ public final class MazePath implements Subject {
         return Crossover.of(this, other)
                 .crossover()
                 .stream()
-                .map(s -> MazePath.of(maze, s))
+                .map(MazePath::of)
                 .collect(Collectors.toList());
     }
 
     @Override
     public MazePath mutate() {
         return MazePath.of(
-                maze,
                 Mutation.of(this).mutate()
         );
     }
@@ -132,11 +99,6 @@ public final class MazePath implements Subject {
     }
 
     @Override
-    public String toString() {
-        return fitnessMazePath.toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -146,7 +108,6 @@ public final class MazePath implements Subject {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(genes);
     }
 }

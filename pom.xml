@@ -48,10 +48,16 @@
             <version>4.2</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>com.google.guava</groupId>-->
+            <!--<artifactId>guava-collections</artifactId>-->
+            <!--<version>r03</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>com.google.guava</groupId>
-            <artifactId>guava-collections</artifactId>
-            <version>r03</version>
+            <artifactId>guava</artifactId>
+            <version>26.0-jre</version>
         </dependency>
 
         <dependency>

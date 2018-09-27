@@ -1,13 +1,11 @@
 package br.com.artificialinteligence;
 
-import br.com.artificialinteligence.factories.AGFactory;
 import br.com.artificialinteligence.maze.factories.LocksFactory;
-import br.com.artificialinteligence.maze.model.*;
+import br.com.artificialinteligence.maze.model.Coordinates;
+import br.com.artificialinteligence.maze.model.Lock;
+import br.com.artificialinteligence.maze.model.MazeConfig;
+import br.com.artificialinteligence.maze.model.MazePath;
 import br.com.artificialinteligence.model.ConfigAG;
-import br.com.artificialinteligence.model.ProblemType;
-import br.com.artificialinteligence.model.Subject;
-import br.com.artificialinteligence.parsers.DoubleParser;
-import br.com.artificialinteligence.parsers.IntegerParser;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -21,11 +19,10 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class PuzzleApplication extends Application {
 
@@ -381,40 +378,48 @@ public class PuzzleApplication extends Application {
         currentExecution = new Thread(() -> {
             try {
 
-                final ConfigAG configAG = ConfigAG.of(
-                        IntegerParser.parse(generationsNumberTf.getText()),
-                        IntegerParser.parse(populationSizeTf.getText()),
-                        DoubleParser.parse(crossoverRateTf.getText()),
-                        DoubleParser.parse(mutationRateTf.getText()),
-                        DoubleParser.parse(elitismRateTf.getText()),
-                        elitismCb.isSelected()
-                );
-                final AG ag = AGFactory.from(ProblemType.MAZE, configAG);
-
-                while( !ag.reachToTheMaxNumberOfGenerations() ) {
-                    currentGenerationT.setText(String.valueOf(ag.getCurrentGeneration()));
-                    currentFitnessT.setText(String.valueOf(ag.getBetter().getFitness()));
-
-                    final LocalDateTime start = LocalDateTime.now();
-
-                    final Subject better = ag.getBetter();
-                    System.out.println("==============================");
-                    System.out.println(better);
-                    System.out.println("==============================");
-                    final String genes = better.getGenes();
-                    System.out.println("Genes: " + genes);
-                    final MazePath mazePath = MazePath.from(Maze.of(locks), genes, ag.getConfigAG().getMutationRate());
-                    while (mazePath.hasMove()) {
-                        moverPeca(mazePath.move());
-                    }
-                    ag.stage();
-                    clearPuzzle();
-                    System.out.println("Resultados:");
-                    System.out.println("Tempo Decorrido >> " +
-                            start.until(LocalDateTime.now(), ChronoUnit.SECONDS) + " segundos.");
-                }
-
-                stopAg();
+//                final ConfigAG configAG = ConfigAG.of(
+//                        IntegerParser.parse(generationsNumberTf.getText()),
+//                        IntegerParser.parse(populationSizeTf.getText()),
+//                        DoubleParser.parse(crossoverRateTf.getText()),
+//                        DoubleParser.parse(mutationRateTf.getText()),
+//                        DoubleParser.parse(elitismRateTf.getText()),
+//                        elitismCb.isSelected()
+//                );
+//                final AG ag = AGFactory.from(ProblemType.MAZE, configAG);
+//
+//                while( !ag.reachToTheMaxNumberOfGenerations() ) {
+//                    currentGenerationT.setText(String.valueOf(ag.getCurrentGeneration()));
+//                    currentFitnessT.setText(String.valueOf(ag.getBetter().getFitness()));
+//
+//                    final LocalDateTime start = LocalDateTime.now();
+//
+//                    final Subject better = ag.getBetter();
+//                    System.out.println("==============================");
+//                    System.out.println(better);
+//                    System.out.println("==============================");
+//                    final String genes = better.getGenes();
+//                    System.out.println("Genes: " + genes);
+//                    final MazePath mazePath = MazePath.of(genes);
+//                    while (mazePath.hasMove()) {
+//                        moverPeca(mazePath.move());
+//                    }
+//                    ag.stage();
+//                    clearPuzzle();
+//                    System.out.println("Resultados:");
+//                    System.out.println("Tempo Decorrido >> " +
+//                            start.until(LocalDateTime.now(), ChronoUnit.SECONDS) + " segundos.");
+//                }
+//
+//                stopAg();
+                Stream.of("100101011011101110010110011010100110010000011001100110", "101001010001011010101010111010010100010101101110010110", "101001010110101001010100010001100110101110101110010110", "100101101010010101010000000110101010100101101010111001", "100110100101101110010101000101101011101001011011100101")
+                        .forEach(genes -> {
+                            final MazePath mazePath = MazePath.of(genes);
+                            while (mazePath.hasMove()) {
+                                moverPeca(mazePath.move());
+                            }
+                            clearPuzzle();
+                        });
             } catch (IllegalArgumentException e) {
                 LOGGER.severe(e.getMessage());
                 Platform.runLater(() -> showAlertError(e.getMessage()));

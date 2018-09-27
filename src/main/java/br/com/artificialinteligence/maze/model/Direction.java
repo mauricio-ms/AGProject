@@ -9,86 +9,26 @@ public enum Direction {
 
     EAST("00") {
         @Override
-        public Boolean isHorizontal() {
-            return true;
-        }
-
-        @Override
-        public Boolean isVertical() {
-            return false;
-        }
-
-        @Override
         public Coordinates getNextCoordinatesFromCurrent(final Coordinates current) {
             return Coordinates.of(current.getX() - 1, current.getY());
-        }
-
-        @Override
-        public Integer getReward() {
-            return MazeConfig.SMALL_REWARD;
         }
     },
     NORTH("01") {
         @Override
-        public Boolean isHorizontal() {
-            return false;
-        }
-
-        @Override
-        public Boolean isVertical() {
-            return true;
-        }
-
-        @Override
         public Coordinates getNextCoordinatesFromCurrent(final Coordinates current) {
             return Coordinates.of(current.getX(), current.getY() + 1);
-        }
-
-        @Override
-        public Integer getReward() {
-            return MazeConfig.GREATER_REWARD;
         }
     },
     WEST("10") {
         @Override
-        public Boolean isHorizontal() {
-            return true;
-        }
-
-        @Override
-        public Boolean isVertical() {
-            return false;
-        }
-
-        @Override
         public Coordinates getNextCoordinatesFromCurrent(final Coordinates current) {
             return Coordinates.of(current.getX() + 1, current.getY());
-        }
-
-        @Override
-        public Integer getReward() {
-            return MazeConfig.GREATER_REWARD;
         }
     },
     SOUTH("11") {
         @Override
-        public Boolean isHorizontal() {
-            return false;
-        }
-
-        @Override
-        public Boolean isVertical() {
-            return true;
-        }
-
-        @Override
         public Coordinates getNextCoordinatesFromCurrent(final Coordinates current) {
             return Coordinates.of(current.getX(), current.getY() - 1);
-        }
-
-        @Override
-        public Integer getReward() {
-            return MazeConfig.SMALL_REWARD;
         }
     };
 
@@ -125,11 +65,5 @@ public enum Direction {
         return value;
     }
 
-    public abstract Boolean isHorizontal();
-
-    public abstract Boolean isVertical();
-
     public abstract Coordinates getNextCoordinatesFromCurrent(final Coordinates coordinates);
-
-    public abstract Integer getReward();
 }

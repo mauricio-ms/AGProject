@@ -28,15 +28,15 @@ public final class AG {
     public Subject stage() {
         lastGeneration = createNextGeneration();
 
-        int repeated = lastGeneration.getSubjects().size() - (int) lastGeneration.getSubjects()
-                .stream()
-                .distinct()
-                .count();
+//        int repeated = lastGeneration.getSubjects().size() - (int) lastGeneration.getSubjects()
+//                .stream()
+//                .distinct()
+//                .count();
 
-        System.out.println("Generation: " + currentGeneration);
-        System.out.println("Fitness: " + getBetter().getFitness());
-        System.out.println("Repeated: " + repeated);
-        System.out.println();
+//        System.out.println("Generation: " + currentGeneration);
+//        System.out.println("Fitness: " + getBetter().getFitness());
+//        System.out.println("Repeated: " + repeated);
+//        System.out.println();
 
         return lastGeneration.getBetter();
     }

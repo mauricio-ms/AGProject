@@ -14,7 +14,7 @@ public final class Roulette {
 
     private static final Integer SECOND_BETTER = 1;
 
-    private static final Integer SELECTEDS_LENGTH = 3;
+    private static final Integer SELECTED_LENGTH = 3;
 
     private final Population population;
 
@@ -55,7 +55,7 @@ public final class Roulette {
 
     private Set<Subject> selectExclusives() {
         final Set<Subject> exclusives = new HashSet<>();
-        while( exclusives.size() < SELECTEDS_LENGTH ) {
+        while( exclusives.size() < SELECTED_LENGTH) {
             final Subject randomSubject = population.getRandom();
             if( !currentSubjects.contains(randomSubject) ) {
                 exclusives.add(randomSubject);

@@ -42,58 +42,6 @@ public final class Lock {
         );
     }
 
-    public Boolean moveIsInLock(final Coordinates currentCoordinates,
-                                final Direction nextMove) {
-        if( nextMove.isHorizontal() ) {
-            final List<Coordinates> rangeCoordinates = IntStream.range(yStart, yEnd)
-                    .mapToObj(y -> Coordinates.of(xStart, y + xStart))
-                    .collect(Collectors.toList());
-            return moveIsInLock(currentCoordinates, nextMove, rangeCoordinates);
-        }
-        final List<Coordinates> rangeCoordinates = IntStream.range(xStart, xEnd)
-                .mapToObj(x -> Coordinates.of(x, yStart))
-                .collect(Collectors.toList());
-        return moveIsInLock(currentCoordinates, nextMove, rangeCoordinates);
-    }
-
-    private Boolean moveIsInLock(final Coordinates currentCoordinates,
-                                 final Direction nextMove,
-                                 final List<Coordinates> rangeCoordinates) {
-        return rangeCoordinates
-                .stream()
-                .filter(v -> moveIsInLock(currentCoordinates, nextMove, v))
-                .findFirst()
-                .isPresent();
-    }
-
-    private Boolean moveIsInLock(final Coordinates currentCoordinates,
-                                 final Direction nextMove,
-                                 final Coordinates lockCoordinates) {
-        final Coordinates nextCoordinates = nextMove.getNextCoordinatesFromCurrent(currentCoordinates);
-        final Integer lockIndex = lockCoordinates.getX() + lockCoordinates.getY();
-        final Integer sourceIndex = currentCoordinates.getX() + currentCoordinates.getY();
-        final Integer targetIndex = nextCoordinates.getX() + nextCoordinates.getY();
-        if( nextMove.isHorizontal() ) {
-            final Boolean isInLock = sourceIndex >= 0 && sourceIndex <= lockIndex && lockIndex <= targetIndex;
-            return lockCoordinates.getY().equals(currentCoordinates.getY()) &&
-                    isInLock;
-        } else if( nextMove.isVertical() ) {
-            if( nextMove.equals(Direction.NORTH) ) {
-                final Boolean isInLock = sourceIndex >= 0 &&
-                        sourceIndex <= lockIndex && lockIndex < targetIndex;
-                return lockCoordinates.getX().equals(currentCoordinates.getX()) &&
-                        isInLock;
-            }
-            final Boolean isInLock = sourceIndex >= 0 &&
-                    sourceIndex <= lockIndex && lockIndex <= targetIndex ||
-                    targetIndex <= lockIndex && lockIndex <= sourceIndex;
-            return lockCoordinates.getX().equals(currentCoordinates.getX()) &&
-                    isInLock;
-//            return lockCoordinates.equals(nextCoordinates);
-        }
-        return false;
-    }
-
     public Boolean isHorizontal() {
         return yStart.equals(yEnd);
     }
