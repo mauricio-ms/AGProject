@@ -1,4 +1,4 @@
-# AGProject
+# ag-maze-problem
 
 Genetic Algorithm implementation to resolve the problem of find a optimal path in a maze.
 
